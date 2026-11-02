@@ -270,7 +270,7 @@ export async function updateProfile(req, res) {
 }
 
 // to get all Students
-export async function getStudents(req, res) {
+export async function getUsers(req, res) {
   try {
     const users = User.find({
       role: "user",
