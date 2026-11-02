@@ -64,35 +64,66 @@ export async function registerUser(req, res) {
 export async function verifyOtp(req, res) {
   try {
     const { email, otp } = req.body;
-    if (!email || !otp) {
+    if (!email || !otp)
       return res.status(400).json({
         message: "email is Required ",
       });
-      const user = User.findOne({ email });
-      if (!user)
-        return res.status(400).json({
-          message: "User not Found",
-        });
-      if (user.otp !== otp || new Date() > new Date(user.otpExpiry)) {
-        return res.status(400).json({
-          message:"Invalid or expire OTP"
-        })
-      }
+    const user = User.findOne({ email });
+    if (!user)
+      return res.status(400).json({
+        message: "User not Found",
+      });
+    if (user.otp !== otp || new Date() > new Date(user.otpExpiry)) {
+      return res.status(400).json({
+        message: "Invalid or expire OTP",
+      });
     }
-    Object.assign(user,{
-      isVerified:true,
-      otp:null,
-      otpExpiry:null
-    })
-    await user.save()
+    Object.assign(user, {
+      isVerified: true,
+      otp: null,
+      otpExpiry: null,
+    });
+    await user.save();
     res.status(200).json({
       message: "User verified successfully",
-    })
+    });
   } catch (error) {
     console.error("Error verifying user", error);
     res.status(500).json({
       message: "Error verifying the user",
       error: error.message,
+    });
+  }
+}
+
+export async function completeProfile(req, res) {
+  try {
+    const { email, department, stream, semester, year, rollNo } = req.body;
+     if (!email)
+      return res.status(400).json({
+        message: "email is Required ",
+      });
+    const user = User.findOne({ email });
+      if (!user)
+        return res.status(400).json({
+          message: "User not Found",
+        });
+      if (!user.isVerified) return  res.status(400).json({
+        message:"User not Verified"
+      })
+      Object.assign(user,{
+        department,stream,semester,year,rollNo,isProfileComplete:true
+      })
+      await user.save()
+      res.status(200).json({
+        message:"Profile completed successfully"
+      })
+
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      message:"error completing the profile",
+      error:error.message
     })
   }
 }
