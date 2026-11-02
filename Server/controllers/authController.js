@@ -1,6 +1,6 @@
-import User from "../models/User";
+import User from "../models/User.js";
 import { generate } from "otp-generator";
-import sendOtp from "../Utils/sendOTP";
+import sendOtp from "../Utils/sendOTP.js";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 import jwt from "jsonwebtoken";
