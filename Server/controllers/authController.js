@@ -182,3 +182,28 @@ export async function loginUser(req,res) {
   }
   
 }
+
+
+export async function getProfile(req,res) {
+  try {
+    const user=await User.findById(req.user.id).select("-password")
+     if(!user){
+      return res.status(400).json({
+        success:false,
+        message:"User not found"
+      })
+    }
+    res.status(200).json({
+      success:true,
+      user
+    })
+  } catch (error) {
+     console.error("Error in Profile Function",error)
+     res.status(500).json({
+      success: false, 
+      message:"Error in Profile getting",
+      error:error.message
+     })   
+  }
+}
+
