@@ -3,6 +3,7 @@ import { generate } from "otp-generator";
 import sendOtp from "../Utils/sendOTP";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
+import jwt from "jsonwebtoken"
 export async function registerUser(req, res) {
   try {
     const { name, email, phone, password } = req.body;
@@ -126,4 +127,58 @@ export async function completeProfile(req, res) {
       error:error.message
     })
   }
+}
+export async function loginUser(req,res) {
+  try {
+    const {email,password}=req.body
+    if(!email || !password){
+      return res.status(400).json({
+        success:false,
+        message:"Email and Password are Required"
+      })
+    }
+    const user=await User.findOne({email})
+    if(!user){
+      return res.status(400).json({
+        success:false,
+        message:"User not found"
+      })
+    }
+    if(!user.isverified){
+      return res.status(400).json({
+        success:false,
+        message:"please verify your email before logging in"
+      })
+    }
+    if(!(bcrypt.compare(password,user.password))){
+      return res.status(400).json({
+        success:false,
+        message:"Invalid Credentials"
+      })
+    }
+    const token= jwt.sign({
+      id:user._id,
+      role:user.role
+    },process.env.JWT_SECRET,{
+      expiresIn:  "7d"
+    })
+    const {password :_,...userResponse}=user.toObject()
+    res.status(200).json({
+      success:true,
+      token,
+      user:userResponse
+    })
+
+
+
+
+  } catch (error) {
+    console.error(error)
+     res.status(500).json({
+      success: false, 
+      message:"login failed",
+      error:error.message
+     })   
+  }
+  
 }
