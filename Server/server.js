@@ -1,31 +1,30 @@
-import express from "express"
-import cors from "cors"
-import "dotenv/config"
-import { connectDB } from "./config/db.js"
+import express from "express";
+import cors from "cors";
+import "dotenv/config";
+import { connectDB } from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
+import studentrouter from "./routes/studentRoutes.js";
 
-const PORT = process.env.PORT || 5000
-const app= express()
-
-
+const PORT = process.env.PORT || 5000;
+const app = express();
 
 // Middlewares
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
 // DB
 
-connectDB()
+connectDB();
 
 // Routes
-app.use("/api/auth",authRouter)
+app.use("/api/auth", authRouter);
+app.use("/api/students", studentrouter);
+app.get("/", (req, res) => {
+  res.json({
+    message: "Server Started",
+  });
+});
 
-app.get("/",(req,res)=>{
-    res.json({
-        message: "Server Started"
-    })
-})
-
-app.listen(PORT,()=>{
-    console.log("Server Started")
-})
+app.listen(PORT, () => {
+  console.log("Server Started");
+});

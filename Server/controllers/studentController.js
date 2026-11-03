@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 
-export async function searchStudentsById(req, res) {
+export async function searchStudentsByRoll(req, res) {
   try {
     const roll = String(req.query.roll || "").trim();
     if (!roll) {

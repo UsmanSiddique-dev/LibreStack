@@ -53,13 +53,15 @@ export async function registerUser(req, res) {
     });
     res.status(201).json({
       message: "User registered successfully,sent otp to your email",
+      user: user,
     });
-  } catch (error) {}
-  console.error("Error registering  user", error);
-  res.status(500).json({
-    message: "Error Registering the user ",
-    error: error.message,
-  });
+  } catch (error) {
+    console.error("Error registering  user", error);
+    res.status(500).json({
+      message: "Error Registering the user ",
+      error: error.message,
+    });
+  }
 }
 
 export async function verifyOtp(req, res) {
@@ -69,12 +71,16 @@ export async function verifyOtp(req, res) {
       return res.status(400).json({
         message: "email is Required ",
       });
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user)
       return res.status(400).json({
         message: "User not Found",
       });
-    if (user.otp !== otp || new Date() > new Date(user.otpExpiry)) {
+    if (
+      String(user.otp).trim() !== String(otp).trim() ||
+      !user.otpExpiry ||
+      Date.now() >= user.otpExpiry.getTime()
+    ) {
       return res.status(400).json({
         message: "Invalid or expire OTP",
       });
@@ -104,11 +110,12 @@ export async function completeProfile(req, res) {
       return res.status(400).json({
         message: "email is Required ",
       });
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user)
       return res.status(400).json({
         message: "User not Found",
       });
+    console.log(user);
     if (!user.isVerified)
       return res.status(400).json({
         message: "User not Verified",
@@ -149,7 +156,7 @@ export async function loginUser(req, res) {
         message: "User not found",
       });
     }
-    if (!user.isverified) {
+    if (!user.isVerified) {
       return res.status(400).json({
         success: false,
         message: "please verify your email before logging in",
@@ -308,18 +315,19 @@ export async function registerAdmin(req, res) {
       email: email.trim(),
       phone,
       password: hashedPassword,
-      role:"admin",
-      isVerified:true
+      role: "admin",
+      isVerified: true,
     });
-    const {password:_,...userResponse}=user.toObject()
+    const { password: _, ...userResponse } = user.toObject();
     res.status(201).json({
-      success:true,
-      message:"Admin registered successfully",
-      user:userResponse
-    })
+      success: true,
+      message: "Admin registered successfully",
+      user: userResponse,
+    });
   } catch (error) {
     console.error("Error Creating Profile:", error);
-    res.status(500).json({ message: "Error Creating Profile", error: error.message });
-  
+    res
+      .status(500)
+      .json({ message: "Error Creating Profile", error: error.message });
   }
 }
