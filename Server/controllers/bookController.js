@@ -1,0 +1,84 @@
+import Issue from "../models/Issue.js";
+import User from "../models/User.js";
+import FineSetting from "../models/fineSettings";
+import {
+  getLocalIsoDate,
+  calculateFine,
+  getDiffInDays,
+  getOverdueUnits,
+  getStartOfDay,
+} from "../Utils/book.util.js";
+
+// Issue A manual Book
+export async function issueManualBooks(req, res) {
+  try {
+    const { studentDetails, books } = req.body;
+    if (!Array.isArray(books) || books.length === 0) {
+      return res.status(400).json({
+        message: "No Books were Found",
+      });
+    }
+    const student = await User.findOne({
+      rollNo: studentDetails.rollNumber,
+    });
+    if (!student) {
+      res.status(400).json({
+        success: false,
+        message: "Student not Found",
+      });
+    }
+    const todayIso = getLocalIsoDate();
+    const validbooks = books.filter((b) => b.title && b.bookCode && b.dueDate);
+    if (validbooks.length === 0) {
+      return res.status(400).json({
+        message:
+          "Please add at least one valid manual book entry with book code and a due Date",
+      });
+    }
+    const createdIssues = await Promise.all(
+      validBooks.map((book) =>
+        Issue.create({
+          source: "manual",
+          bookCode: book.bookCode.trim(),
+          title: book.title.trim(),
+          userEmail: student.email,
+          userName: student.name,
+          issuedOn: todayIso,
+          dueDate: book.dueDate,
+          returnedOn: null,
+          fineRate: Number(book.fineRate ?? req.body.fineRate ?? 10),
+          fineInterval: book.fineInterval ?? req.body.fineInterval ?? "day",
+          manualFine: 0,
+          fineCleared: false,
+          clearedFineAmount: 0,
+          department:
+            studentDetails.department?.trim() ||
+            student.department ||
+            "General",
+          stream: studentDetails.stream?.trim() || student.stream || "General",
+          year:
+            studentDetails.academicYear?.trim() || student.year || "1st Year",
+          semester:
+            studentDetails.semester?.trim() || student.semester || "Semester 1",
+          rollNumber:
+            studentDetails.rollNumber?.trim() ||
+            student.rollNo ||
+            "Not assigned",
+          studentId: student.rollNo || `ST-${student._id.toString().slice(-4)}`,
+        }),
+      ),
+    );
+    res.status(201).json({
+        success:true,
+        message:`${createdIssues.length} manual books issued succesfully`,
+        count:createdIssues.length,
+        issues:createdIssues
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+        success:false,
+        message:"Error Issueing manual Boks"
+    })
+  }
+}
