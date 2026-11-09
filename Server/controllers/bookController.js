@@ -69,16 +69,52 @@ export async function issueManualBooks(req, res) {
       ),
     );
     res.status(201).json({
-        success:true,
-        message:`${createdIssues.length} manual books issued succesfully`,
-        count:createdIssues.length,
-        issues:createdIssues
+      success: true,
+      message: `${createdIssues.length} manual books issued succesfully`,
+      count: createdIssues.length,
+      issues: createdIssues,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error Issueing manual Books",
+    });
+  }
+}
+export async function getIssues(req, res) {
+  try {
+    const issues = await Issue.find({}).sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      issues,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error Fetching Issues",
+    });
+  }
+}
+
+export async function getStudentIssues(req, res) {
+  try {
+    const issues = await Issue.find({
+      userEmail: req.user.email.toLowerCase().trim(),
+    }).sort({
+      createdAt: -1,
+    });
+    res.status(200).json({
+      success:true,
+      issues
+
     })
   } catch (error) {
-    console.error(error)
+     console.error(error);
     res.status(500).json({
-        success:false,
-        message:"Error Issueing manual Boks"
-    })
+      success: false,
+      message: "Error fetching student issues",
+    });
   }
 }
