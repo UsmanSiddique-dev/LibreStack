@@ -106,12 +106,11 @@ export async function getStudentIssues(req, res) {
       createdAt: -1,
     });
     res.status(200).json({
-      success:true,
-      issues
-
-    })
+      success: true,
+      issues,
+    });
   } catch (error) {
-     console.error(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error fetching student issues",
@@ -119,31 +118,67 @@ export async function getStudentIssues(req, res) {
   }
 }
 
-export async function returnBook(req,res) {
+export async function returnBook(req, res) {
   try {
-    const issue= await Issue.findById(req.params.id);
-    if(!issue){
+    const issue = await Issue.findById(req.params.id);
+    if (!issue) {
       return res.status(400).json({
-        message:"Issue Record not found"
-      })
+        message: "Issue Record not found",
+      });
     }
-    if(issue.returnedOn){
+    if (issue.returnedOn) {
       return res.status(400).json({
-        message:"Book already Returned"
-      })
+        message: "Book already Returned",
+      });
     }
-    issue.returnedOn=getLocalIsoDate();
-    await issue.save()
+    issue.returnedOn = getLocalIsoDate();
+    await issue.save();
     res.status(200).json({
-      success:true,
-      message:"book returned successfully",
-      issue
-    })
+      success: true,
+      message: "book returned successfully",
+      issue,
+    });
   } catch (error) {
-     console.error(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error returning manual Books",
     });
   }
 }
+export async function applyFine(req, res) {
+  try {
+    const fineAmount= Number(req.body.amount)
+    if(Number.isNaN((fineAmount))){
+      return res.status(400).json({
+        message:"Invalid fine amound"
+      })
+
+    }
+     const issue = await Issue.findById(req.params.id);
+    if (!issue) {
+      return res.status(400).json({
+        message: "Issue Record not found",
+      });
+    }
+    issue.manualfine= fineAmount
+    if(fineAmount > 0){
+      issue.fineCleared=false
+
+    }
+    res.status(200).json({
+      success:true,
+      message:"Manual fine applied successfully",
+      issue
+    })
+  } catch (error) {
+     const issue = await Issue.findById(req.params.id);
+    if (!issue) {
+      return res.status(400).json({
+        message: "Error Applying manual fine",
+      });
+    }
+  }
+}
+
+
