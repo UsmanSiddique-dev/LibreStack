@@ -172,13 +172,61 @@ export async function applyFine(req, res) {
       issue
     })
   } catch (error) {
-     const issue = await Issue.findById(req.params.id);
-    if (!issue) {
-      return res.status(400).json({
-        message: "Error Applying manual fine",
-      });
-    }
+   console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error Applying Fine",
+    });
   }
 }
 
+// Clear the Manual fine
+export async function clearFine(req,res){
+    try {
+      const issue = await Issue.findById(req.params.id);
+    if (!issue) {
+      return res.status(400).json({
+        message: "Issue Record not found",
+      });
+    }
+     Object.assign(issue,{
+        manualfine:0,
+        fineCleared:true,
+        clearedFineAmount:calculateFine(issue,issue.fineRate,issue.fineInterval)
 
+      })
+      await issue.save()
+      res.status(200).json({
+        succcess:true,
+        message:"Fine Cleared Successfully",
+        issue
+      })
+    } catch (error) {
+      console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error Clearing Fine",
+    });
+    }
+}
+
+// Get Active fine Settings
+export async function getFineSettings(req,res) {
+  try {
+    const settings= (await FineSetting.findOne({}) || (await FineSetting.create({
+      amount:10,
+      interval:"day"
+    })))
+    res.status(200).json({
+      succcess:true,
+      settings
+    })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error Fetching fine Settings",
+    });
+  }
+  
+}
