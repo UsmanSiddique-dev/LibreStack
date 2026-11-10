@@ -1,6 +1,6 @@
 import Issue from "../models/Issue.js";
 import User from "../models/User.js";
-import FineSetting from "../models/fineSettings";
+import FineSetting from "../models/FineSetting.js";
 import {
   getLocalIsoDate,
   calculateFine,
@@ -148,31 +148,29 @@ export async function returnBook(req, res) {
 }
 export async function applyFine(req, res) {
   try {
-    const fineAmount= Number(req.body.amount)
-    if(Number.isNaN((fineAmount))){
+    const fineAmount = Number(req.body.amount);
+    if (Number.isNaN(fineAmount)) {
       return res.status(400).json({
-        message:"Invalid fine amound"
-      })
-
+        message: "Invalid fine amound",
+      });
     }
-     const issue = await Issue.findById(req.params.id);
+    const issue = await Issue.findById(req.params.id);
     if (!issue) {
       return res.status(400).json({
         message: "Issue Record not found",
       });
     }
-    issue.manualfine= fineAmount
-    if(fineAmount > 0){
-      issue.fineCleared=false
-
+    issue.manualfine = fineAmount;
+    if (fineAmount > 0) {
+      issue.fineCleared = false;
     }
     res.status(200).json({
-      success:true,
-      message:"Manual fine applied successfully",
-      issue
-    })
+      success: true,
+      message: "Manual fine applied successfully",
+      issue,
+    });
   } catch (error) {
-   console.error(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error Applying Fine",
@@ -181,46 +179,51 @@ export async function applyFine(req, res) {
 }
 
 // Clear the Manual fine
-export async function clearFine(req,res){
-    try {
-      const issue = await Issue.findById(req.params.id);
+export async function clearFine(req, res) {
+  try {
+    const issue = await Issue.findById(req.params.id);
     if (!issue) {
       return res.status(400).json({
         message: "Issue Record not found",
       });
     }
-     Object.assign(issue,{
-        manualfine:0,
-        fineCleared:true,
-        clearedFineAmount:calculateFine(issue,issue.fineRate,issue.fineInterval)
-
-      })
-      await issue.save()
-      res.status(200).json({
-        succcess:true,
-        message:"Fine Cleared Successfully",
-        issue
-      })
-    } catch (error) {
-      console.error(error);
+    Object.assign(issue, {
+      manualfine: 0,
+      fineCleared: true,
+      clearedFineAmount: calculateFine(
+        issue,
+        issue.fineRate,
+        issue.fineInterval,
+      ),
+    });
+    await issue.save();
+    res.status(200).json({
+      succcess: true,
+      message: "Fine Cleared Successfully",
+      issue,
+    });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error Clearing Fine",
     });
-    }
+  }
 }
 
 // Get Active fine Settings
-export async function getFineSettings(req,res) {
+export async function getFineSettings(req, res) {
   try {
-    const settings= (await FineSetting.findOne({}) || (await FineSetting.create({
-      amount:10,
-      interval:"day"
-    })))
+    const settings =
+      (await FineSetting.findOne({})) ||
+      (await FineSetting.create({
+        amount: 10,
+        interval: "day",
+      }));
     res.status(200).json({
-      succcess:true,
-      settings
-    })
+      succcess: true,
+      settings,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -228,5 +231,32 @@ export async function getFineSettings(req,res) {
       message: "Error Fetching fine Settings",
     });
   }
-  
+}
+export async function updateFineSettings(req, res) {
+  try {
+    const { amount, interval } = req.body;
+    let settings = await FineSetting.fineOne({});
+    if (settings) {
+      if (amount !== undefined) settings.amount = Number(amount);
+      if (interval !== undefined) settings.interval = interval;
+      await settings.save();
+    } else {
+      settings = await FineSetting.create({
+        amount: Number(amount) || 10,
+        interval: interval || "day",
+      });
+    }
+    res.status(200).json({
+      success:true,
+      message:"Fine Settings Updated SuccessFully",
+      settings
+    })
+  } catch (error) 
+  {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error Updating fine Settings",
+    });
+  }
 }
