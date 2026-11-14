@@ -249,6 +249,7 @@ export async function updateFineSettings(req, res) {
     res.status(200).json({
       success:true,
       message:"Fine Settings Updated SuccessFully",
+      
       settings
     })
   } catch (error) 

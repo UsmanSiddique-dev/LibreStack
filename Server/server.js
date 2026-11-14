@@ -4,6 +4,7 @@ import "dotenv/config";
 import { connectDB } from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
 import studentrouter from "./routes/studentRoutes.js";
+import bookRouter from "./routes/bookRoutes.js";
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -19,6 +20,7 @@ connectDB();
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/students", studentrouter);
+app.use("/api/books",bookRouter)
 app.get("/", (req, res) => {
   res.json({
     message: "Server Started",

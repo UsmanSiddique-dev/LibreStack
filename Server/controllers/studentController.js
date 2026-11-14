@@ -37,6 +37,8 @@ export async function searchStudentsByRoll(req, res) {
     console.error("error Searching the students", error);
     res.status(500).json({
       message: "error during student searching",
+      success: false,
+      error: error.message,
     });
   }
 }
