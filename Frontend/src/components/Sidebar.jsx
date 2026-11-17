@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { sidebarStyles as s } from "../assets/dummyStyles";
+import { sidebarStyles as s } from "../assets/Styles";
 import {
   Bell,
   BookCopy,

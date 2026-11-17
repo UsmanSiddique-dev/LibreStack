@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 import { ArrowRight, BookMarked, ShieldCheck, Users } from "lucide-react";
 import { useAuth } from "../shared/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import { homeStyles as s } from "../assets/dummyStyles";
+import { homeStyles as s } from "../assets/Styles";
 const navItems = [
   {
     label: "Student Dashboard",
