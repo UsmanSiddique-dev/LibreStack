@@ -1,6 +1,9 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
-import { BookMarked, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, BookMarked, ShieldCheck, Users } from "lucide-react";
+import { useAuth } from "../shared/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { homeStyles as s } from "../assets/dummyStyles";
 const navItems = [
   {
     label: "Student Dashboard",
@@ -36,6 +39,8 @@ const features = [
   },
 ];
 function Home() {
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
   const footerItems = currentUser
     ? [
         {
@@ -58,15 +63,49 @@ function Home() {
         },
       ];
   return (
-    <div>
+    <div className={s.layoutContainer}>
       <Sidebar
         title="LibreStack"
         subtitle="Library Management Portal"
         badge="Beautiful Theme"
         navItems={navItems}
         footerItems={footerItems}
-        
       />
+      <main className={s.mainContent}>
+        <div className={s.innerContainer}>
+          <section className={s.heroSection}>
+            <div className={s.heroGrid}>
+              <div>
+                <span className={s.heroBadge}>Library Management Website</span>
+                <h1 className={s.heroTitle}>
+                  Manage Students, Books, returns, and Fines in one Library
+                </h1>
+                <p className={s.heroText}>
+                  This Library management portal gives student a focused
+                  borrowing dashboard and gives admins a practical woekspace for
+                  manual circulation , user records and overdue tracking
+                </p>
+                <div className={s.heroButtons}>
+                  {currentUser ? (
+                    <Link
+                      to={
+                        currentUser.role === "admin"
+                          ? "/admin/dashboard"
+                          : "/user/dashboard"
+                      }
+                      className={s.heroButtonPrimary}
+                    >
+                      Go To Dashboard <ArrowRight size={16} />
+                    </Link>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
     </div>
   );
 }

@@ -1,11 +1,10 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null);
 
-const SESSION_KEY = process.env.SESSION_KEY || "library-auth-session";
-const TOKEN_KEY = process.env.TOKEN_KEY || "library-auth-token";
-const API_BASE_URL =
-  process.env.API_BASE_URL || "http://localhost:5000/api/auth";
+const SESSION_KEY = "library-auth-session";
+const TOKEN_KEY = "library-auth-token";
+const API_BASE_URL = "http://localhost:5000/api/auth";
 const defaultAccounts = [];
 
 const mapUserToFrontend = (user) => {
@@ -69,8 +68,8 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error fetching users from backend:", error);
     }
-  };  
-// To fetch the user profile Details
+  };
+  // To fetch the user profile Details
   useEffect(() => {
     const initializeAuth = async () => {
       const token = localStorage.getItem(TOKEN_KEY);
@@ -211,15 +210,15 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
-//   To logout
+  //   To logout
 
   const logout = () => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(SESSION_KEY);
     setCurrentUser(null);
   };
-// To register a student
- const registerStudent = async ({ name, email, phone, password }) => {
+  // To register a student
+  const registerStudent = async ({ name, email, phone, password }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
@@ -242,7 +241,7 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
-  
+
   const verifyOtpCode = async ({ email, otp }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/verify-otp`, {
@@ -266,6 +265,7 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
+  // Complete Profile
 
   const completeProfileData = async ({
     email,
@@ -317,6 +317,8 @@ export const AuthProvider = ({ children }) => {
       (item) => item.email.toLowerCase() === email.trim().toLowerCase(),
     );
   };
+
+  // To upadte User Profile
 
   const updateProfile = async (updates) => {
     const token = localStorage.getItem(TOKEN_KEY);
@@ -370,5 +372,31 @@ export const AuthProvider = ({ children }) => {
       };
     }
   };
-  return <AuthContext.Provider>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        accounts,
+        currentUser,
+        login,
+        logout,
+        ready,
+        signup,
+        verifyOtpCode,
+        registerStudent,
+        accountExists,
+        updateProfile,
+        updateProfile,
+        completeProfileData,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("use Auth must be inside Auth Provider");
+  }
+  return context;
 };
