@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createElement } from "react";
 import Sidebar from "../components/Sidebar";
 import { ArrowRight, BookMarked, ShieldCheck, Users } from "lucide-react";
 import { useAuth } from "../shared/AuthContext";
@@ -78,11 +78,11 @@ function Home() {
               <div>
                 <span className={s.heroBadge}>Library Management Website</span>
                 <h1 className={s.heroTitle}>
-                  Manage Students, Books, returns, and Fines in one Library
+                  Manage Students, Books, Returns, and Fines in one Library
                 </h1>
                 <p className={s.heroText}>
                   This Library management portal gives student a focused
-                  borrowing dashboard and gives admins a practical woekspace for
+                  borrowing dashboard and gives admins a practical workspace for
                   manual circulation , user records and overdue tracking
                 </p>
                 <div className={s.heroButtons}>
@@ -98,11 +98,44 @@ function Home() {
                       Go To Dashboard <ArrowRight size={16} />
                     </Link>
                   ) : (
-                    <></>
+                    <>
+                      <Link to="/signup" className={s.heroButtonPrimary}>
+                        Create Account
+                        <ArrowRight size={16} />
+                      </Link>
+                      <Link to="/login" className={s.heroButtonSecondary}>
+                        Login Now
+                        <ArrowRight size={16} />
+                      </Link>
+                    </>
                   )}
                 </div>
               </div>
+              <div className="grid gap-4">
+                <div className={s.infoCard}>
+                  <p className={s.infoCardLabel}>Library Workflow</p>
+                  <p className={s.infoCardTitle}>
+                    Separate Student and Admin Dashboards built for daily
+                    Library Operations.
+                  </p>
+                  <p className={s.infoCardText}>
+                    Moniter issue activity, keep profile records updated, and
+                    track overdue followups without leaving the system.
+                  </p>
+                </div>
+              </div>
             </div>
+          </section>
+          <section className={s.featuresGrid}>
+            {features.map(({ icon, title, text }) => (
+              <article className={s.featureCard} key={title}>
+                <span className={s.featureIconWrapper}>
+                  {createElement(icon, { size: 22 })}
+                </span>
+                <h2 className={s.featureTitle}>{title}</h2>
+                <p className={s.featureText}>{text}</p>
+              </article>
+            ))}
           </section>
         </div>
       </main>
