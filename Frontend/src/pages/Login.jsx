@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { loginStyles as s } from "../assets/Styles";
-import { ShieldCheck, UserRound } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  ShieldCheck,
+  UserRound,
+} from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../shared/AuthContext";
 const roleChoises = [
@@ -140,7 +148,93 @@ function Login() {
             <p className={s.formSubtitle}>
               Select your role and use your college library account credentails
             </p>
-            <form action="" className={s.form}></form>
+            <form onSubmit={handleSubmit} className={s.form}>
+              <div className={s.roleContainer}>
+                <p className={s.roleLabel}>Choose login role</p>
+                <div className={s.roleGrid}>
+                  {roleChoises.map((choice) => {
+                    const Icon = choice.icon;
+                    return (
+                      <label
+                        key={choice.value}
+                        className={`${s.roleOption} ${form.role === choice.value ? s.roleOptionSelected : s.roleOptionUnselected}`}
+                      >
+                        <input
+                          type="radio"
+                          name="role"
+                          value={choice.value}
+                          checked={form.role === choice.value}
+                          onChange={handleChange}
+                          className={s.roleRadio}
+                        />
+                        <span className={s.roleIconLabel}>
+                          <Icon size={14} />
+                          {choice.role}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+              <label htmlFor="" className="block">
+                <span className={s.fieldLabel}>
+                  <Mail size={15} />
+                  Email Address
+                </span>
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="student@mail.com"
+                  className={s.input}
+                />
+              </label>
+              <label htmlFor="" className="block">
+                <span className={s.fieldLabel}>
+                  <LockKeyhole size={15} />
+                  Password
+                </span>
+                <div className={s.passwordWrapper}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    placeholder="Enter the password"
+                    className={s.passwordInput}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((current) => !current)}
+                    className={s.togglePasswordButton}
+                  >
+                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                  </button>
+                </div>
+              </label>
+              {error && <div className={s.errorMessage}>{error}</div>}
+              <div className={s.footerFlex}>
+                <span className={s.footerText}>
+                  {form.role === "admin"
+                    ? "Admin Accounts use existing credentials"
+                    : "Student Signup is available below"}
+                </span>
+                {form.role === "user" && (
+                  <Link to="/signup" className={s.signupLink}>
+                    Create Account
+                  </Link>
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className={s.submitButton}
+              >
+                {loading ? "Logging In ..." : "Login Now"}
+                {!loading && <ArrowRight size={15} />}
+              </button>
+            </form>
           </div>
         </section>
       </div>
