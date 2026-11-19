@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { signupStyles as s } from "../assets/Styles";
 import { useAuth } from "../shared/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Mail, UserRound } from "lucide-react";
 const stepList = [
   { id: 1, title: "Account" },
   { id: 2, title: "OTP" },
@@ -199,6 +199,50 @@ const SignUp = () => {
             <p className={s.panelSubtitle}>
               Complete the student signup steps: account,OTP,and Profile details
             </p>
+            <div className={s.stepCard}>
+              {stepList.map((item) => (
+                <div
+                  className={`${s.stepCard} ${step >= item.id ? s.stepCardCompleted : s.stepCardPending}`}
+                >
+                  <p className={s.stepLabel}>Step {item.id}</p>
+                  <p className={s.stepTitle}>{item.title}</p>
+                </div>
+              ))}
+            </div>
+            <form action="" className={s.form} onSubmit={handleSubmit}>
+              {step === 1 && (
+                <>
+                  <label htmlFor="" className="block">
+                    <span className={s.fieldLabel}>
+                      <UserRound size={16} />
+                      Full Name
+                    </span>
+                    <input
+                      type="text"
+                      name="name"
+                      value={form.name}
+                      onChange={handelechange}
+                      placeholder="Enter your Full name"
+                      className={s.input}
+                    />
+                  </label>
+                   <label htmlFor="" className="block">
+                    <span className={s.fieldLabel}>
+                      <Mail size={16} />
+                      Email Address
+                    </span>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handelechange}
+                      placeholder="Enter your Email Address"
+                      className={s.input}
+                    />
+                  </label>
+                </>
+              )}
+            </form>
           </div>
         </section>
       </div>
