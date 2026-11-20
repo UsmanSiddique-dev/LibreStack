@@ -3,6 +3,7 @@ import { signupStyles as s } from "../assets/Styles";
 import { useAuth } from "../shared/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import {
+  ArrowRight,
   CheckCircle2,
   Eye,
   EyeOff,
@@ -12,6 +13,7 @@ import {
   Phone,
   UserRound,
 } from "lucide-react";
+import { studentSemesters, studentYears } from "../data/libraryData";
 const stepList = [
   { id: 1, title: "Account" },
   { id: 2, title: "OTP" },
@@ -53,7 +55,7 @@ const SignUp = () => {
     const timer = setTimeout(() => setToast(null), 2600);
     return () => clearTimeout(timer);
   }, [toast]);
-  const handelechange = (event) => {
+  const handleChange = (event) => {
     const [name, value] = event.target;
     setError("");
     if (name === "phone") {
@@ -230,7 +232,7 @@ const SignUp = () => {
                       type="text"
                       name="name"
                       value={form.name}
-                      onChange={handelechange}
+                      onChange={handleChange}
                       placeholder="Enter your Full name"
                       className={s.input}
                     />
@@ -244,7 +246,7 @@ const SignUp = () => {
                       type="email"
                       name="email"
                       value={form.email}
-                      onChange={handelechange}
+                      onChange={handleChange}
                       placeholder="Enter your Email Address"
                       className={s.input}
                     />
@@ -258,7 +260,7 @@ const SignUp = () => {
                       type="text"
                       name="phone"
                       value={form.phone}
-                      onChange={handelechange}
+                      onChange={handleChange}
                       placeholder="+91 09567438"
                       className={s.input}
                     />
@@ -272,7 +274,7 @@ const SignUp = () => {
                       type="email"
                       name="email"
                       value={form.email}
-                      onChange={handelechange}
+                      onChange={handleChange}
                       placeholder="Enter your Email Address"
                       className={s.input}
                     />
@@ -287,7 +289,7 @@ const SignUp = () => {
                         type={showPassword ? "text" : "password"}
                         name="password"
                         value={form.password}
-                        onChange={handelechange}
+                        onChange={handleChange}
                         placeholder="Create Your password"
                         className={s.passwordInput}
                       />
@@ -307,7 +309,7 @@ const SignUp = () => {
                 </>
               )}
               {/* Step 2 */}
-              
+
               {step === 2 && (
                 <>
                   <div className={s.otpInfoBox}>
@@ -336,7 +338,113 @@ const SignUp = () => {
                   </label>
                 </>
               )}
+              {/* Step 3 */}
+              {step === 3 && (
+                <>
+                  <label className="block">
+                    <span className={s.fieldLabelBlock}>Department</span>
+                    <input
+                      name="department"
+                      type="text"
+                      value={form.department}
+                      onChange={handleChange}
+                      placeholder="Write your department"
+                      className={s.input}
+                    />
+                  </label>
 
+                  <label className="block">
+                    <span className={s.fieldLabelBlock}>Stream</span>
+                    <input
+                      name="stream"
+                      type="text"
+                      value={form.stream}
+                      onChange={handleChange}
+                      placeholder="Write your stream"
+                      className={s.input}
+                    />
+                  </label>
+
+                  <div className={s.twoColumnGrid}>
+                    <label className="block">
+                      <span className={s.fieldLabelBlock}>Semester</span>
+                      <select
+                        name="semester"
+                        value={form.semester}
+                        onChange={handleChange}
+                        className={s.select}
+                      >
+                        {studentSemesters.map((semester) => (
+                          <option key={semester} value={semester}>
+                            {semester}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="block">
+                      <span className={s.fieldLabelBlock}>Year</span>
+                      <select
+                        name="academicYear"
+                        value={form.academicYear}
+                        onChange={handleChange}
+                        className={s.select}
+                      >
+                        {studentYears.map((year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <label className="block">
+                    <span className={s.fieldLabelBlock}>Roll Number</span>
+                    <input
+                      name="rollNumber"
+                      type="text"
+                      value={form.rollNumber}
+                      onChange={handleChange}
+                      placeholder="Write your roll number"
+                      className={s.input}
+                    />
+                  </label>
+                </>
+              )}
+              {error && <div className={s.errorMessage}>{error}</div>}
+              <div className={s.buttonGroup}>
+                {step > 1 && (
+                  <button
+                    type="button"
+                    onClick={goBack}
+                    disabled={loading}
+                    className={s.backButton}
+                  >
+                    Back
+                  </button>
+                )}
+                {step > 3 ? (
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    disabled={loading}
+                    className={s.nextButton}
+                  >
+                    {loading ? "Please Wait" : "Continue"}
+                    {!loading && <ArrowRight size={15} />}
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className={s.submitButton}
+                  >
+                    {loading ? "Completing profile" : "Complete profile"}
+                    {!loading && <ArrowRight size={15} />}
+                  </button>
+                )}
+              </div>
             </form>
           </div>
         </section>
