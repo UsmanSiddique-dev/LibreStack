@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Eye,
   EyeOff,
+  KeyRound,
   LockKeyhole,
   Mail,
   Phone,
@@ -305,6 +306,37 @@ const SignUp = () => {
                   </label>
                 </>
               )}
+              {/* Step 2 */}
+              
+              {step === 2 && (
+                <>
+                  <div className={s.otpInfoBox}>
+                    <p className={s.otpInfoLabel}>Verification Sent</p>
+                    <p className={s.otpInfoText}>
+                      We have sent a 6-digit OTP verification code to{" "}
+                      <span className={s.emailHighlight}>{form.email}</span>.
+                      Please check your inbox and enter the code below to verify
+                      your account.
+                    </p>
+                  </div>
+
+                  <label className="block">
+                    <span className={s.fieldLabel}>
+                      <KeyRound size={15} />
+                      OTP Verification
+                    </span>
+                    <input
+                      name="otp"
+                      type="text"
+                      value={form.otp}
+                      onChange={handleChange}
+                      placeholder="Enter 6-digit OTP"
+                      className={s.input}
+                    />
+                  </label>
+                </>
+              )}
+
             </form>
           </div>
         </section>
