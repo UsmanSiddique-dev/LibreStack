@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import { signupStyles as s } from "../assets/Styles";
 import { useAuth } from "../shared/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import { CheckCircle2, Mail, UserRound } from "lucide-react";
+import {
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  Phone,
+  UserRound,
+} from "lucide-react";
 const stepList = [
   { id: 1, title: "Account" },
   { id: 2, title: "OTP" },
@@ -226,7 +234,7 @@ const SignUp = () => {
                       className={s.input}
                     />
                   </label>
-                   <label htmlFor="" className="block">
+                  <label htmlFor="" className="block">
                     <span className={s.fieldLabel}>
                       <Mail size={16} />
                       Email Address
@@ -239,6 +247,61 @@ const SignUp = () => {
                       placeholder="Enter your Email Address"
                       className={s.input}
                     />
+                  </label>
+                  <label htmlFor="" className="block">
+                    <span className={s.fieldLabel}>
+                      <Mail size={16} />
+                      Email Address
+                    </span>
+                    <input
+                      type="text"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handelechange}
+                      placeholder="+91 09567438"
+                      className={s.input}
+                    />
+                  </label>
+                  <label htmlFor="" className="block">
+                    <span className={s.fieldLabel}>
+                      <Phone size={16} />
+                      Phone Number
+                    </span>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handelechange}
+                      placeholder="Enter your Email Address"
+                      className={s.input}
+                    />
+                  </label>
+                  <label htmlFor="" className="block">
+                    <span className={s.fieldLabel}>
+                      <LockKeyhole size={16} />
+                      Password
+                    </span>
+                    <div className={s.passwordWrapper}>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={form.password}
+                        onChange={handelechange}
+                        placeholder="Create Your password"
+                        className={s.passwordInput}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((current) => !current)}
+                        className={s.toggleButton}
+                      >
+                        {showPassword ? (
+                          <EyeOff size={17} />
+                        ) : (
+                          <Eye size={17} />
+                        )}
+                      </button>
+                    </div>
                   </label>
                 </>
               )}
