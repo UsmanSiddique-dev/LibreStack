@@ -4,6 +4,7 @@ import { useAuth } from "../shared/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
+  BadgeCheck,
   CheckCircle2,
   Eye,
   EyeOff,
@@ -11,6 +12,7 @@ import {
   LockKeyhole,
   Mail,
   Phone,
+  Sparkles,
   UserRound,
 } from "lucide-react";
 import { studentSemesters, studentYears } from "../data/libraryData";
@@ -56,15 +58,20 @@ const SignUp = () => {
     return () => clearTimeout(timer);
   }, [toast]);
   const handleChange = (event) => {
-    const [name, value] = event.target;
+    const { name, value } = event.target;
     setError("");
     if (name === "phone") {
-      const digitsOnly = value.replacde(/\D/g, "").slice(0, 10);
+      const digitsOnly = value.replace(/\D/g, "").slice(0, 10);
       setForm((current) => ({
         ...current,
-        [name]: value,
+        phone: digitsOnly,
       }));
+      return;
     }
+    setForm((current) => ({
+      ...current,
+      [name]: value,
+    }));
   };
   // fields must be filled by the user
   const validateStepOne = () => {
@@ -122,7 +129,7 @@ const SignUp = () => {
         setError(res.error);
         return;
       }
-      showToast("OTP sent to your email successfully!");
+      showToast("OTP sent successfully!");
     }
 
     if (step === 2) {
@@ -210,7 +217,7 @@ const SignUp = () => {
             <p className={s.panelSubtitle}>
               Complete the student signup steps: account,OTP,and Profile details
             </p>
-            <div className={s.stepCard}>
+            <div className={s.stepGrid}>
               {stepList.map((item) => (
                 <div
                   className={`${s.stepCard} ${step >= item.id ? s.stepCardCompleted : s.stepCardPending}`}
@@ -251,31 +258,19 @@ const SignUp = () => {
                       className={s.input}
                     />
                   </label>
-                  <label htmlFor="" className="block">
+                  <label className="block">
                     <span className={s.fieldLabel}>
-                      <Mail size={16} />
-                      Email Address
+                      <Phone size={16} />
+                      Phone Number
                     </span>
                     <input
                       type="text"
                       name="phone"
                       value={form.phone}
                       onChange={handleChange}
-                      placeholder="+91 09567438"
-                      className={s.input}
-                    />
-                  </label>
-                  <label htmlFor="" className="block">
-                    <span className={s.fieldLabel}>
-                      <Phone size={16} />
-                      Phone Number
-                    </span>
-                    <input
-                      type="email"
-                      name="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="Enter your Email Address"
+                      inputMode="numeric"
+                      maxLength={10}
+                      placeholder="Enter your 10-digit phone number"
                       className={s.input}
                     />
                   </label>
@@ -424,14 +419,18 @@ const SignUp = () => {
                     Back
                   </button>
                 )}
-                {step > 3 ? (
+                {step < 3 ? (
                   <button
                     type="button"
                     onClick={goNext}
                     disabled={loading}
                     className={s.nextButton}
                   >
-                    {loading ? "Please Wait" : "Continue"}
+                    {loading
+                      ? step === 1
+                        ? "Sending OTP..."
+                        : "Verifying OTP..."
+                      : "Continue"}
                     {!loading && <ArrowRight size={15} />}
                   </button>
                 ) : (
@@ -446,6 +445,24 @@ const SignUp = () => {
                 )}
               </div>
             </form>
+          </div>
+        </section>
+        <section className={s.infoPanel}>
+          <span className={s.infoBadge}>
+            <Sparkles size={14} />
+            Step wise Signup
+          </span>
+          <h2 className={s.infoTitle}>
+            Create the Student account,verify OTP, and finish the profile in
+            three Steps.
+          </h2>
+          <div className={s.infoList}>
+            {signupHighlights.map((item) => (
+              <div key={item} className={s.infoListItem}>
+                <BadgeCheck size={18} className={s.infoIcon} />
+                {item}
+              </div>
+            ))}
           </div>
         </section>
       </div>
