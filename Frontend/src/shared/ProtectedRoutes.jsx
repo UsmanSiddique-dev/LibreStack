@@ -1,9 +1,9 @@
 import React from "react";
 import { protectedRouteStyles as s } from "../assets/Styles";
 import { useAuth } from "./AuthContext";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-function ProtectedRoutes({ allowedRole }) {
+function ProtectedRoute({ allowedRole }) {
   const { currentUser, ready } = useAuth();
   const location = useLocation();
 
@@ -58,8 +58,9 @@ function ProtectedRoutes({ allowedRole }) {
       />
     );
   }
-  
-  return <div></div>;
+  console.log("Protected Route: Access Granted");
+
+  return <Outlet />;
 }
 
-export default ProtectedRoutes;
+export default ProtectedRoute;
