@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "./AuthContext";
 
 const LibraryContext = createContext(null);
 
@@ -636,7 +636,7 @@ export const LibraryProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(LIBRARY_FINE_SETTINGS_KEY, JSON.stringify(fineSettings));
   }, [fineSettings]);
-  
+
 // Return Book
   const returnBook = (bookId, recordId = null) => {
     const todayIso = getLocalIsoDate();
