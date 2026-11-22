@@ -588,6 +588,7 @@ export const LibraryProvider = ({ children }) => {
     }
   };
 
+  // GET Fine Settings
   const fetchFineSettings = async () => {
     try {
       const response = await fetch(`${API_BOOKS_URL}/fine-settings`, {
@@ -635,7 +636,8 @@ export const LibraryProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(LIBRARY_FINE_SETTINGS_KEY, JSON.stringify(fineSettings));
   }, [fineSettings]);
-
+  
+// Return Book
   const returnBook = (bookId, recordId = null) => {
     const todayIso = getLocalIsoDate();
 
