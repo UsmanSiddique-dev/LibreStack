@@ -14,15 +14,12 @@ function App() {
       <Route path="/signup" element={<SignUp />} />
 
       {/* Protected Routes */}
-      <Route element={<ProtectedRoute allowedRole="admin" />} />
-      <Route path="/admin" element={<Adminlayout />} />
-      <Route index element={<Navigate to="/admin/dashboard" replace />} />
-      <Route
-        path="/dashboard"
-        element={
-          <Navigate to="/admin/dashboard" element={<AdminDashboardPage />} />
-        }
-      />
+      <Route element={<ProtectedRoute allowedRole="admin" />}>
+        <Route path="/admin" element={<Adminlayout />}>
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
+        </Route>
+      </Route>
     </Routes>
   );
 }

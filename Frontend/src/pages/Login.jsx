@@ -169,7 +169,7 @@ function Login() {
                         />
                         <span className={s.roleIconLabel}>
                           <Icon size={14} />
-                          {choice.role}
+                          {choice.label}
                         </span>
                       </label>
                     );
