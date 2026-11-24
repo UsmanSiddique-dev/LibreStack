@@ -6,6 +6,8 @@ import { ShieldEllipsis } from "lucide-react";
 import { AlertTriangle } from "lucide-react";
 import { useLibrary } from "../shared/LibraryContext";
 const icons = [UserRound, Activity, ShieldEllipsis, AlertTriangle];
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 function AdminDashboardPage() {
   const { adminStats, studentSummaries } = useLibrary();
@@ -121,6 +123,17 @@ function AdminDashboardPage() {
             </div>
           )}
         </div>
+        {attentionrecords.length ? (
+          <div className={s.viewMoreContainer}>
+            <Link
+              to="/admin/users?status=Overdue&sort=high-to-low"
+              className={s.viewMoreLink}
+            >
+              View More
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        ) : null}
       </section>
     </div>
   );
