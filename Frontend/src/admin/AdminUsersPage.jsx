@@ -222,10 +222,28 @@ function AdminUsersPage() {
     link.click();
     URL.revokeObjectURL(url) 
   };
+  const handleConfirm=async ()=>{
+    if(!confirmAction) return;
+    if(confirmAction.type === "clear-fine"){
+      const result=await clearFineForRecord(confirmAction.payload);
+      if(result?.ok){
+        triggerToast("Fine cleared Successfully")
+      }else{
+        triggerToast("Failed to clear the fine ,please try later","error")
+      }
+    }
+    if(confirmAction.type === "return-book"){
+      const result=await returnIssuedRecord(confirmAction.payload);
+      if(result?.ok){
+        triggerToast("Book returned successfully")
+      }else{
+        triggerToast("Failed to return the book please try later","error")
+      }
+    }
+    setConfirmAction(null)
+  }
   return (
-    <div className={s.pageContainer}>
-      <div className={s.pageContainer}></div>
-    </div>
+    
   );
 }
 
