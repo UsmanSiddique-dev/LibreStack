@@ -3,6 +3,7 @@ import { adminBooksPageStyles as s } from "../assets/Styles";
 import { useLibrary } from "../shared/LibraryContext";
 import { useState, useRef } from "react";
 import { useEffect } from "react";
+import { Search } from "lucide-react";
 
 const getTodayIso = () => {
   const date = new Date();
@@ -160,22 +161,24 @@ function AdminBookPage() {
       setFormMessage(
         "Search and select a student by role Number before issuing books",
       );
-      return
+      return;
     }
-    const result=await issueManualBooksToStudent({
-        userEmail:issueForm.userEmail,
-        studentDetails:issueForm,
-        books:issueForm.books
-    })
-    if(!result.ok){
-        setFormMessage(result.error ?? "Unable to issue books right now");
-        return;
+    const result = await issueManualBooksToStudent({
+      userEmail: issueForm.userEmail,
+      studentDetails: issueForm,
+      books: issueForm.books,
+    });
+    if (!result.ok) {
+      setFormMessage(result.error ?? "Unable to issue books right now");
+      return;
     }
-    setFormMessage(`${result.count} manual book records(s) issued successfully`);
+    setFormMessage(
+      `${result.count} manual book records(s) issued successfully`,
+    );
     setIssueForm(createInitialForm());
     setSelectedStudent(null);
-    setMatchingStudents([])
-    setSearchError("")
+    setMatchingStudents([]);
+    setSearchError("");
   };
 
   return (
@@ -191,8 +194,99 @@ function AdminBookPage() {
                 the due date.
               </p>
             </div>
-            <div className={s.fineRuleBadge}></div>
+            <div className={s.fineRuleBadge}>
+              Fine rule: Rs. {fineSettings.amount} per {fineSettings.interval}
+            </div>
           </div>
+          <form className={s.form} onSubmit={handleIssueSubmit}>
+            <div className={s.formGrid}>
+              <label htmlFor="" className={s.label}>
+                <span className={s.labelSpan}>Student name</span>
+                <div className={s.searchInputWrapper}>
+                  <Search className={s.searchIcon} size={15} />
+                  <input
+                    type="text"
+                    name="studentName"
+                    value={issueForm.studentName}
+                    readOnly
+                    placeholder="Selected Student Name"
+                    className={s.readonlyInput}
+                  />
+                </div>
+              </label>
+              <label htmlFor="" className={s.label}>
+                <span className={s.labelSpan}>
+                    Department
+                </span>
+                <input
+                    type="text"
+                    name="department"
+                    value={issueForm.department}
+                    readOnly={isStudentSelected}
+                    onChange={handleIssueChange}
+                    placeholder="Department"
+                    className={s.textInput}
+                  />
+              </label>
+
+              <label htmlFor="" className={s.label}>
+                <span className={s.labelSpan}>
+                    Stream
+                </span>
+                <input
+                    type="text"
+                    name="stream"
+                    value={issueForm.stream}
+                    readOnly={isStudentSelected}
+                    onChange={handleIssueChange}
+                    placeholder="Stream"
+                    className={s.textInput}
+                  />
+              </label>
+              <label htmlFor="" className={s.label}>
+                <span className={s.labelSpan}>
+                    Year
+                </span>
+                <input
+                    type="text"
+                    name="academicYear"
+                    value={issueForm.academicYear}
+                    readOnly={isStudentSelected}
+                    onChange={handleIssueChange}
+                    placeholder="Year"
+                    className={s.textInput}
+                  />
+              </label>
+              <label htmlFor="" className={s.label}>
+                <span className={s.labelSpan}>
+                    Semester
+                </span>
+                <input
+                    type="text"
+                    name="semester"
+                    value={issueForm.semester}
+                    readOnly={isStudentSelected}
+                    onChange={handleIssueChange}
+                    placeholder="Semester"
+                    className={s.textInput}
+                  />
+              </label>
+              <label htmlFor="" className={s.label}>
+                <span className={s.labelSpan}>
+                    Roll No.
+                </span>
+                <input
+                    type="text"
+                    name="rollNumber"
+                    value={issueForm.rollNumber}
+                    readOnly={isStudentSelected}
+                    onChange={handleIssueChange}
+                    placeholder="Search by Roll No"
+                    className={s.textInput}
+                  />
+              </label>
+            </div>
+          </form>
         </div>
       </section>
     </div>
