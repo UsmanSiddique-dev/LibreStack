@@ -7,7 +7,7 @@ import { searchStudentsByRoll } from "../controllers/studentController.js";
 const studentrouter = express.Router();
 
 studentrouter.get(
-  "/search-by-role",
+  "/search-by-roll",
   authenticationToken,
   authorizeRoles("admin"),
   searchStudentsByRoll,

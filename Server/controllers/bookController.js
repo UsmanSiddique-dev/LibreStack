@@ -36,7 +36,7 @@ export async function issueManualBooks(req, res) {
       });
     }
     const createdIssues = await Promise.all(
-      validBooks.map((book) =>
+      validbooks.map((book) =>
         Issue.create({
           source: "manual",
           bookCode: book.bookCode.trim(),

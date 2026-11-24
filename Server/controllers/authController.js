@@ -279,10 +279,10 @@ export async function updateProfile(req, res) {
 // to get all Students
 export async function getUsers(req, res) {
   try {
-    const users = User.find({
+    const users = await User.find({
       role: "user",
       isVerified: true,
-      isProfileCompleted: true,
+      isProfileComplete: true,
     }).select("-password");
     res.status(200).json({
       success: true,
