@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ProtectedRoute from "./shared/ProtectedRoutes";
-import Adminlayout from "./admin/Adminlayout";
+import Adminlayout from "./admin/AdminLayout"
 import AdminDashboardPage from "./admin/AdminDashboardPage";
 import AdminBookPage from "./admin/AdminBookPage";
 function App() {
