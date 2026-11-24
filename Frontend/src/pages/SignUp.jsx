@@ -212,10 +212,10 @@ const SignUp = () => {
               Back To Home
             </Link>
             <h1 className={s.panelTitle}>
-              Create Ypur Student Library Account.
+              Create Your Student Library Account.
             </h1>
             <p className={s.panelSubtitle}>
-              Complete the student signup steps: account,OTP,and Profile details
+              Complete the student signup steps: Account, OTP, and Profile details
             </p>
             <div className={s.stepGrid}>
               {stepList.map((item) => (

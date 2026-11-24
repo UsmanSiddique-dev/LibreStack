@@ -2,6 +2,15 @@ import React, { useEffect, useState } from "react";
 import { adminUsersPageStyles as s } from "../assets/Styles";
 import { useSearchParams } from "react-router-dom";
 import { useLibrary } from "../shared/LibraryContext";
+import { UsersRound } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
+import { Search } from "lucide-react";
+import { Download } from "lucide-react";
+import { UserRoundCog } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import { Eye } from "lucide-react";
+import { createElement } from "react";
+import { useMemo } from "react";
 const roleStyles = {
   user: "bg-emerald-100 text-emerald-900",
   admin: "bg-amber-100 text-amber-900",
@@ -243,7 +252,397 @@ function AdminUsersPage() {
     setConfirmAction(null)
   }
   return (
-    
+    <div className={s.pageContainer}>
+      {confirmAction && (
+        <div className={s.fixedModal}>
+          <p className={s.modalTitle}>{confirmAction.title}</p>
+          <p className={s.modalMessage}>{confirmAction.message}</p>
+          <div className={s.modalButtons}>
+            <button
+              type="button"
+              onClick={() => setConfirmAction(null)}
+              className={s.modalCancelButton}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirm}
+              className={s.modalConfirmButton}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div
+          className={`${s.toastBase} ${
+            toast.tone === "error" ? s.toastError : s.toastSuccess
+          }`}
+        >
+          <div className={s.toastContent}>
+            <CheckCircle2 size={18} />
+            {toast.message}
+          </div>
+        </div>
+      )}
+
+      <section className={s.statsSection}>
+        <div className={s.statsGrid}>
+          {[
+            {
+              label: "Students",
+              value: `${studentSummaries.length}`,
+              icon: UsersRound,
+            },
+            {
+              label: "Overdue Accounts",
+              value: `${studentSummaries.filter((student) => student.status === "Overdue").length}`,
+              icon: ShieldCheck,
+            },
+            {
+              label: "Active Borrowers",
+              value: `${
+                studentSummaries.filter((student) =>
+                  student.activeBooks.some(
+                    (record) => record.liveStatus === "Borrowed",
+                  ),
+                ).length
+              }`,
+              icon: UserRoundCog,
+            },
+            {
+              label: "Pending Fine Total",
+              value: `Rs. ${studentSummaries.reduce(
+                (sum, student) => sum + (student.totalFine ?? 0),
+                0,
+              )}`,
+              icon: CheckCircle2,
+            },
+          ].map(({ label, value, icon }) => (
+            <div key={label} className={s.statCard}>
+              <span className={s.statIconWrapper}>
+                {createElement(icon, { size: 18 })}
+              </span>
+              <p className={s.statLabel}>{label}</p>
+              <p className={s.statValue}>{value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className={s.mainSection}>
+        <div className={s.headerFlex}>
+          <div className="min-w-0">
+            <h1 className={s.headerTitle}>
+              Student Accounts and Issued Books
+            </h1>
+            <p className={s.headerSubtitle}>
+              Filter students by borrowing status, export the visible data to
+              CSV, clear fines after payment, and confirm returns from the
+              action cards.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={exportCsv}
+            className={s.exportButton}
+          >
+            <Download size={16} />
+            Export CSV
+          </button>
+        </div>
+
+        <div className={s.filtersContainer}>
+          <label className={s.filterLabel}>
+            <span className={s.filterLabelSpan}>Search Students And Books</span>
+            <div className={s.searchWrapper}>
+              <Search size={16} className={s.searchIcon} />
+              <input
+                type="text"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search by student name, email, book code, or book name"
+                className={s.searchInput}
+              />
+            </div>
+          </label>
+
+          <label className={s.filterLabel}>
+            <span className={s.filterLabelSpan}>Student Filter</span>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+              className={s.selectInput}
+            >
+              {studentFilterOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {statusFilter === "Overdue" && (
+            <label className={s.filterLabel}>
+              <span className={s.filterLabelSpan}>Overdue Fine Sort</span>
+              <select
+                value={overdueSortOrder}
+                onChange={(event) => setOverdueSortOrder(event.target.value)}
+                className={s.selectInput}
+              >
+                {overdueSortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+        </div>
+
+        <div className={s.studentsGrid}>
+          {filteredStudents.map((member) => {
+            const isExpanded = expandedStudent === member.email;
+
+            return (
+              <article key={member.email} className={s.studentCard}>
+                <div className={s.studentCardHeader}>
+                  <div className="min-w-0">
+                    <p className={s.studentName}>{member.name}</p>
+                    <p className={s.studentIdEmail}>
+                      {member.studentId ?? "Not assigned"} | {member.email}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setExpandedStudent((current) =>
+                        current === member.email ? "" : member.email,
+                      )
+                    }
+                    className={s.expandButton}
+                    aria-label={isExpanded ? "Hide student details" : "Show student details"}
+                  >
+                    <Eye size={18} />
+                  </button>
+                </div>
+
+                <div className={s.statsRow}>
+                  <div className={s.statBlock}>
+                    <p className={s.statBlockLabel}>Role</p>
+                    <span
+                      className={`${s.badge} ${
+                        roleStyles[member.role]
+                      }`}
+                    >
+                      {roleLabels[member.role] ?? member.role}
+                    </span>
+                  </div>
+
+                  <div className={s.statBlock}>
+                    <p className={s.statBlockLabel}>Active Books</p>
+                    <p className={s.numericStat}>{member.borrowedCount}</p>
+                  </div>
+
+                  <div className={s.statBlock}>
+                    <p className={s.statBlockLabel}>Total Fine</p>
+                    <p className={s.numericStat}>Rs. {member.totalFine}</p>
+                  </div>
+
+                  <div className={s.statBlock}>
+                    <p className={s.statBlockLabel}>Status</p>
+                    <span
+                      className={`${s.badge} ${
+                        statusStyles[member.status]
+                      }`}
+                    >
+                      {member.status}
+                    </span>
+                  </div>
+
+                  <div className={s.statBlock}>
+                    <p className={s.statBlockLabel}>Fine Cleared</p>
+                    <p className={s.numericStat}>{member.fineClearedCount}</p>
+                  </div>
+                </div>
+
+                {isExpanded && (
+                  <div className={s.expandedContainer}>
+                    <div className={s.detailsCard}>
+                      <p className={s.detailsCardLabel}>Student details</p>
+                      <div className={s.detailsGrid}>
+                        <div className={s.detailsItem}>
+                          Department: {member.department ?? "General"}
+                        </div>
+                        <div className={s.detailsItem}>
+                          Stream: {member.stream ?? "General"}
+                        </div>
+                        <div className={s.detailsItem}>
+                          Year: {member.academicYear ?? "1st Year"}
+                        </div>
+                        <div className={s.detailsItem}>
+                          Roll Number: {member.rollNumber ?? "Not assigned"}
+                        </div>
+                        <div className={s.detailsItem}>
+                          Mobile Number: {member.phone || "Not provided"}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={s.booksListContainer}>
+                      <p className={s.detailsCardLabel}>
+                        Issued books with actions
+                      </p>
+                      <div className={s.booksList}>
+                        {member.history.length ? (
+                          member.history.map((record) => {
+                            const isOverdue = record.liveStatus === "Overdue";
+                            const fineAmountToShow = record.fineCleared
+                              ? (record.clearedFineAmount ?? 0)
+                              : record.liveFine;
+                            const showFineHistory =
+                              isOverdue ||
+                              Boolean(record.fineCleared) ||
+                              fineAmountToShow > 0;
+                            const fineClearDisabled =
+                              !showFineHistory ||
+                              Boolean(record.returnedOn) ||
+                              record.fineCleared ||
+                              fineAmountToShow <= 0;
+                            const returnDisabled =
+                              Boolean(record.returnedOn) ||
+                              (isOverdue && !record.fineCleared);
+
+                            return (
+                              <div
+                                key={`${member.email}-${record.id}`}
+                                className={s.bookCard}
+                              >
+                                <div className={s.bookHeader}>
+                                  <div className="min-w-0">
+                                    <p className={s.bookTitle}>
+                                      {record.title}
+                                    </p>
+                                    <p className={s.bookCode}>
+                                      {record.bookCode}
+                                    </p>
+                                  </div>
+                                  <span
+                                    className={`${s.bookStatusBadge} ${
+                                      recordStatusStyles[record.liveStatus]
+                                    }`}
+                                  >
+                                    {record.liveStatus}
+                                  </span>
+                                </div>
+
+                                <div className={s.bookDetailGrid}>
+                                  <div className={s.bookDetailItem}>
+                                    Issue: {record.issueLabel}
+                                  </div>
+                                  <div className={s.bookDetailItem}>
+                                    Due: {record.dueLabel}
+                                  </div>
+                                  {showFineHistory && (
+                                    <div className={s.bookDetailItem}>
+                                      Fine: Rs. {fineAmountToShow}
+                                    </div>
+                                  )}
+                                  {showFineHistory && (
+                                    <div className={s.bookDetailItem}>
+                                      Fine Status:{" "}
+                                      {record.fineCleared ? "Cleared" : "Pending"}
+                                    </div>
+                                  )}
+                                  <div className={s.bookDetailItem}>
+                                    Return:{" "}
+                                    {record.returnedOn ? "Returned" : "Pending"}
+                                  </div>
+                                  <div className={s.bookDetailItem}>
+                                    Return Date: {record.returnedOnLabel || "-"}
+                                  </div>
+                                </div>
+
+                                <div className={s.bookActions}>
+                                  {showFineHistory && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        setConfirmAction({
+                                          type: "clear-fine",
+                                          title: "Clear fine for this student?",
+                                          message:
+                                            "Confirming will set this record fine to Rs. 0 and disable the fine cleared button.",
+                                          payload: {
+                                            source: record.source,
+                                            recordId: record.id,
+                                            bookId: record.bookId,
+                                          },
+                                        })
+                                      }
+                                      disabled={fineClearDisabled}
+                                      className={s.clearFineButton}
+                                    >
+                                      {record.fineCleared
+                                        ? "Fine Cleared"
+                                        : "Clear Fine"}
+                                    </button>
+                                  )}
+
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setConfirmAction({
+                                        type: "return-book",
+                                        title: "Return this book?",
+                                        message:
+                                          "Confirming will mark this book as returned with today's date and disable the return button.",
+                                        payload: {
+                                          source: record.source,
+                                          recordId: record.id,
+                                          bookId: record.bookId,
+                                        },
+                                      })
+                                    }
+                                    disabled={returnDisabled}
+                                    className={s.returnButton}
+                                  >
+                                    {record.returnedOn
+                                      ? "Returned"
+                                      : isOverdue
+                                        ? "Return Book"
+                                        : "Return Early"}
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className={s.emptyHistory}>
+                            No issue history found.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </article>
+            );
+          })}
+
+          {!filteredStudents.length && (
+            <div className={s.emptyState}>
+              No students or issued books matched your filters.
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
   );
 }
 
