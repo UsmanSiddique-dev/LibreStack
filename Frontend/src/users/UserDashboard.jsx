@@ -128,6 +128,24 @@ function UserDashboardPage() {
           </div>
         </div>
       </section>
+      <section className={s.statsGrid}>
+        {overviewStats.map((item) => {
+          const Icon = item.icon;
+          return (
+            <article className={s.statCard} key={item.key}>
+              <div className={s.statHeader}>
+                <span className={s.statIconWrapper}>
+                  <Icon size={18} />
+                </span>
+                <span className={s.statLiveBadge}>Live</span>
+              </div>
+              <p className={s.statLabel}>{item.label}</p>
+              <p className={s.statValue}>{item.value}</p>
+              <p className={s.statNote}>{item.note}</p>
+            </article>
+          );
+        })}
+      </section>
     </div>
   );
 }
