@@ -8,6 +8,7 @@ import { GraduationCap } from "lucide-react";
 import { AlertTriangle } from "lucide-react";
 import { ReceiptText } from "lucide-react";
 import { IdCard } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function UserDashboardPage() {
   const { currentUser } = useAuth();
@@ -145,6 +146,20 @@ function UserDashboardPage() {
             </article>
           );
         })}
+      </section>
+      <section className={s.recentSection}>
+        <div className={s.recentHeader}>
+          <div>
+            <h2 className={s.recentTitle}>Recent Books</h2>
+            <p className={s.recentSubtitle}>
+              The latest three records from your books bage are shown here with
+              same card design so you can continue from the dashboard
+            </p>
+          </div>
+          <Link to="/user/books" className={s.viewMoreButton}>
+            View More
+          </Link>
+        </div>
       </section>
     </div>
   );
