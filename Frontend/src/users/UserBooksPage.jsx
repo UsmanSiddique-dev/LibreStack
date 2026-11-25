@@ -1,5 +1,6 @@
 import React from "react";
 import { userBooksPageStyles as s } from "../assets/Styles";
+import { Search } from "lucide-react";
 const UserBooksPage = () => {
   return (
     <div className={s.pageContainer}>
@@ -18,7 +19,25 @@ const UserBooksPage = () => {
           </div>
         </div>
       </section>
-      
+      <section className={s.mainSection}>
+        <div className={s.sectionHeader}>
+          <div>
+            <h2 className={s.sectionTitle}>My Issued Books</h2>
+            <p className={s.sectionSubtitle}>
+              Medium-size cards now separate the headline details from the
+              supporting record data.
+            </p>
+          </div>
+        </div>
+        <div className={s.filtersContainer}>
+          <label htmlFor="" className={s.filterLabel}>
+            <span className={s.filterLabelSpan}>Search My Books</span>
+            <div className={s.searchWrapper}>
+              <Search size={14} className={s.searchIcon} />
+            </div>
+          </label>
+        </div>
+      </section>
     </div>
   );
 };
