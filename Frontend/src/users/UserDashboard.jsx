@@ -9,6 +9,7 @@ import { AlertTriangle } from "lucide-react";
 import { ReceiptText } from "lucide-react";
 import { IdCard } from "lucide-react";
 import { Link } from "react-router-dom";
+import UserBookCard from "./UserBookCard";
 
 function UserDashboardPage() {
   const { currentUser } = useAuth();
@@ -159,6 +160,21 @@ function UserDashboardPage() {
           <Link to="/user/books" className={s.viewMoreButton}>
             View More
           </Link>
+        </div>
+        <div className={s.recentGrid}>
+          {recentBooks.length ? (
+            recentBooks.map((record) => (
+              <UserBookCard
+                key={record.id}
+                record={record}
+                borrowerName={currentUser?.name ?? "Student"}
+              />
+            ))
+          ) : (
+            <div className={s.emptyRecentState}>
+                No recent Books found for this account
+            </div>
+          )}
         </div>
       </section>
     </div>
