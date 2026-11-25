@@ -4,11 +4,13 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ProtectedRoute from "./shared/ProtectedRoutes";
-import Adminlayout from "./admin/AdminLayout"
+import Adminlayout from "./admin/AdminLayout";
 import AdminDashboardPage from "./admin/AdminDashboardPage";
 import AdminBookPage from "./admin/AdminBookPage";
 import AdminUsersPage from "./admin/AdminUsersPage";
 import AdminFinesPage from "./admin/AdminFinesPage";
+import UserLayout from "./users/UserLayout";
+import UserDashboardPage from "./users/UserDashboard";
 function App() {
   return (
     <Routes>
@@ -24,6 +26,12 @@ function App() {
           <Route path="books" element={<AdminBookPage />} />
           <Route path="users" element={<AdminUsersPage />} />
           <Route path="fines" element={<AdminFinesPage />} />
+        </Route>
+      </Route>
+      <Route element={<ProtectedRoute allowedRole="user" />}>
+        <Route element={<UserLayout />}>
+          <Route index element={<Navigate to="/user/dashboard" replace />} />
+          <Route path="dashboard" element={<UserDashboardPage />} />
         </Route>
       </Route>
     </Routes>
