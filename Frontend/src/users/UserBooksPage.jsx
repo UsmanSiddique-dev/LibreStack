@@ -5,6 +5,7 @@ import { useAuth } from "../shared/AuthContext";
 import { useLibrary } from "../shared/LibraryContext";
 import { useState } from "react";
 import { useMemo } from "react";
+import UserBookCard from "./UserBookCard";
 const UserBooksPage = () => {
   const { currentUser } = useAuth();
   const { currentUserHistory } = useLibrary();
@@ -69,8 +70,45 @@ const UserBooksPage = () => {
             <span className={s.filterLabelSpan}>Search My Books</span>
             <div className={s.searchWrapper}>
               <Search size={14} className={s.searchIcon} />
+              <input
+                type="text"
+                name="search"
+                value={filters.search}
+                onChange={handleFilterChange}
+                placeholder="Search by book name, code ,borrower or author"
+                className={s.searchInput}
+              />
             </div>
           </label>
+          <label htmlFor="" className={s.filterLabel}>
+            <span className={s.filterLabelSpan}>Status</span>
+            <select
+              name="status"
+              value={filters.status}
+              onChange={handleFilterChange}
+              className={s.selectInput}
+            >
+              <option value="All">All Status</option>
+              <option value="Borrowed">Borrowed</option>
+              <option value="Overdue">Overdue</option>
+              <option value="Returned">Returned</option>
+            </select>
+          </label>
+        </div>
+        <div className={s.booksGrid}>
+          {filteredIssuedBooks.length ? (
+            filteredIssuedBooks.map((record) => (
+              <UserBookCard
+                key={record.id}
+                record={record}
+                borrowerName={currentUser?.name ?? "Student"}
+              />
+            ))
+          ) : (
+            <div className={s.emptyState}>
+              No Issued books matched your search
+            </div>
+          )}
         </div>
       </section>
     </div>
