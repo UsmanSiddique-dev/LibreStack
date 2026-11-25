@@ -8,6 +8,7 @@ import Adminlayout from "./admin/AdminLayout"
 import AdminDashboardPage from "./admin/AdminDashboardPage";
 import AdminBookPage from "./admin/AdminBookPage";
 import AdminUsersPage from "./admin/AdminUsersPage";
+import AdminFinesPage from "./admin/AdminFinesPage";
 function App() {
   return (
     <Routes>
@@ -22,6 +23,7 @@ function App() {
           <Route path="dashboard" element={<AdminDashboardPage />} />
           <Route path="books" element={<AdminBookPage />} />
           <Route path="users" element={<AdminUsersPage />} />
+          <Route path="fines" element={<AdminFinesPage />} />
         </Route>
       </Route>
     </Routes>
