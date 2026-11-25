@@ -94,6 +94,36 @@ function UserDashboardPage() {
                   <IdCard size={18} />
                 </span>
               </div>
+              <div className={s.profileDetails}>
+                <div className={s.profileDetailItem}>
+                  Student ID: {currentUserSummary?.studentid ?? "Not Assigned"}
+                </div>
+                <div className={s.profileDetailItem}>
+                  Roll No: {currentUserSummary?.rollNumber ?? "Not Assigned"}
+                </div>
+                <div className={s.profileDetailItem}>
+                  Department: {currentUserSummary?.department ?? "General"}
+                </div>
+              </div>
+            </article>
+            <article className={s.semesterCard}>
+              <div className={s.semesterHeader}>
+                <p className={s.semesterLabel}>Semester Details</p>
+                <p className={s.semesterValue}>
+                  {currentUserSummary?.semester ?? "Semester 1"}
+                </p>
+              </div>
+              <span className={s.semesterIconWrapper}>
+                <GraduationCap size={18} />
+              </span>
+              <div className={s.semesterDetails}>
+                <div className={s.semesterDetailItem}>
+                  Stream: {currentUserSummary?.stream ?? "General"}
+                </div>
+                <div className={s.semesterDetailItem}>
+                  Acadmic Year: {currentUserSummary?.academicYear ?? "1st Year"}
+                </div>
+              </div>
             </article>
           </div>
         </div>
