@@ -12,6 +12,7 @@ import AdminFinesPage from "./admin/AdminFinesPage";
 import UserLayout from "./users/UserLayout";
 import UserDashboardPage from "./users/UserDashboard";
 import UserBooksPage from "./users/UserBooksPage";
+import UserEditProfilePage from "./users/UserEditProfilePage";
 function App() {
   return (
     <Routes>
@@ -34,8 +35,10 @@ function App() {
           <Route index element={<Navigate to="/user/dashboard" replace />} />
           <Route path="dashboard" element={<UserDashboardPage />} />
           <Route path="books" element={<UserBooksPage />} />
+          <Route path="profile" element={<UserEditProfilePage />} />
         </Route>
       </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
