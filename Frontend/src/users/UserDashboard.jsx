@@ -7,21 +7,21 @@ import { BookCopy } from "lucide-react";
 import { GraduationCap } from "lucide-react";
 import { AlertTriangle } from "lucide-react";
 import { ReceiptText } from "lucide-react";
+import { IdCard } from "lucide-react";
 
 function UserDashboardPage() {
-    const { currentUser } = useAuth();
-    const { currentUserHistory, currentUserSummary } = useLibrary();
-  
-    const activeCount = currentUserHistory.filter(
-      (item) => item.liveStatus === "Borrowed",
-    ).length;
-    const overdueCount = currentUserHistory.filter(
-      (item) => item.liveStatus === "Overdue",
-    ).length;
-    const pendingFine = currentUserSummary?.totalFine ?? 0;
-    const clearedFine = currentUserSummary?.totalClearedFine ?? 0;
+  const { currentUser } = useAuth();
+  const { currentUserHistory, currentUserSummary } = useLibrary();
 
-    
+  const activeCount = currentUserHistory.filter(
+    (item) => item.liveStatus === "Borrowed",
+  ).length;
+  const overdueCount = currentUserHistory.filter(
+    (item) => item.liveStatus === "Overdue",
+  ).length;
+  const pendingFine = currentUserSummary?.totalFine ?? 0;
+  const clearedFine = currentUserSummary?.totalClearedFine ?? 0;
+
   const overviewStats = [
     {
       key: "issues",
@@ -62,8 +62,6 @@ function UserDashboardPage() {
 
   const recentBooks = currentUserHistory.slice(0, 3);
 
-  
-
   return (
     <div className={s.pageContainer}>
       <section className={s.heroSection}>
@@ -73,6 +71,30 @@ function UserDashboardPage() {
               <Sparkles size={12} />
               Student Dashboard
             </span>
+            <h1 className={s.heroTitle}>
+              {currentUser?.name ?? "Reader"} profile, semester status, and your
+              latest library books.
+            </h1>
+            <p className={s.heroText}>
+              Your dashboard now keeps the important account summary at the top
+              and shows the most recent issued books directly below for faster
+              access.
+            </p>
+          </div>
+          <div className={s.rightColumnGrid}>
+            <article className={s.profileCard}>
+              <div className={s.profileHeader}>
+                <div className="min-w-0">
+                  <p className={s.profileLabel}>Student profile</p>
+                  <p className={s.profileName}>
+                    {currentUser?.name ?? "Campus Reader"}
+                  </p>
+                </div>
+                <span className={s.profileIconWrapper}>
+                  <IdCard size={18} />
+                </span>
+              </div>
+            </article>
           </div>
         </div>
       </section>
